@@ -1,12 +1,5 @@
 from flask import Flask
+app = Flask(__name__)
+app.config.from_object('app.settings')
 
-def create_app(extra_config_settings={}):
-    """Create a Flask application.
-    """
-    app = Flask(__name__)
-
-    @app.route('/')
-    def hello_world():
-        return 'Hello from Flask!'
-
-    return app
+from app import route

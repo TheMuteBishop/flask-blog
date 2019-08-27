@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block container %}
+    <form method="post" action="" novalidate="">
+        {{ form.hidden_tag() }}
+        <div>
+            <p> {{ form.username.label }}</p>
+            {% if form.username.errors %}
+            <p>{{ form.username() }}</p>
+            {% for error in form.username.errors %}
+                <span class="danger">[{{ error }}]</span>
+            {% endfor %}
+            {% else %}
+            <p>{{ form.username() }}</p>
+            {% endif %}
+
+
+        </div>
+        <div>
+            <p> {{ form.password.label }}</p>
+            <p>{{ form.password() }}</p>
+
+        </div>
+        <p>{{ form.remember_me() }}  {{ form.remember_me.label }}</p>
+        <button>{{ form.submit()}}</button>
+    </form>
+{% endblock container %}

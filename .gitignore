@@ -1,24 +1,40 @@
-.DS_Store
-.env
-.flaskenv
-*.pyc
-*.pyo
-env/
-env*
-dist/
-build/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
 *.egg
-*.egg-info/
-_mailinglist
-.tox/
-.cache/
-.pytest_cache/
-.idea/
-docs/_build/
-.vscode
-# Coverage reports
-htmlcov/
-.coverage
-.coverage.*
-*,cover
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
 __pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+venv
+app.db
+microblog.log*
