@@ -20,9 +20,13 @@
                 <li class="nav-item">
                     <a class="nav-link active" href="{{url_for('index')}}">Home</a>
                 </li>
+                {% if current_user.is_anonymous %}
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="{{url_for('login')}}" tabindex="-1" aria-disabled="true">login</a>
+                    <a class="nav-link disabled" href="{{url_for('login')}}" tabindex="-1">login</a>
                 </li>
+                {% else %}
+                    <a class="nav-link disabled" href="{{url_for('logout')}}" tabindex="-1">logout</a>
+                {% endif %}
             </nav>
         </div>
 

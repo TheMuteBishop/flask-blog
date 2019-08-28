@@ -1,32 +1,59 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request
+from flask_login import current_user, login_user, logout_user
+from werkzeug.urls import url_parse
 
-from app import app
-from app.forms import LoginForm
+from app import app, db
+from app.forms import LoginForm, RegisterForm
+from app.models import User, Post
+
 
 @app.route('/')
 @app.route('/index')
 def index():
-    user = { "username": "MuteBisthop"}
-    posts = [
-        {
-            "author": {"username" : "John"},
-            "body": "Starter template Be sure to have your pages set up with the latest design and development standards. \
-            That means using an HTML5 doctype and including a viewport meta tag for proper responsive behaviors. \
-            Put it all together and your pages should look like this"
-        },
-        {
-            "author": {"username" : "Jonny"},
-            "body": "Starter template Be sure to have your pages set up with the latest design and development standards. \
-            That means using an HTML5 doctype and including a viewport meta tag for proper responsive behaviors. \
-            Put it all together and your pages should look like this"
-        },
-        ]
-    return render_template('index.html', user=user, posts=posts)
+    posts = Post.query.all()
+    return render_template('index.html', title='Home',posts=posts)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        flash(f'Login requested for user "{form.username.data}"')
-        return redirect(url_for('index'))
+        user = User.query.filter_by(name=form.username.data).first()
+        if user is None or user.verify_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        flash(f'{user.name} logged in.')
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
     return render_template('login.html', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user = User(name=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash(f'{form.username.data} registerd successfully.')
+
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
+    return render_template('register.html', form=form)
+
+
+
+
